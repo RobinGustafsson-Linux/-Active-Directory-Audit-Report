@@ -37,3 +37,21 @@ Write-Host "`nAntal användare per avdelning:`n"
 foreach ($key in $antalPerAvdelning.Keys) {
     Write-Host "$Key : $(antalPerAvdelning[$key])"
 }
+
+# ===== DEL B =====
+
+Write-Host "`n=== Del B: Pipeline och export ===`n"
+
+# Groups computers by site
+$datorerPerSite = $data.computers | Group-Object -Property site
+Write-Host "Datorer per site:`n"
+foreach ($grupp in $datorerPerSite) {
+    Write-Host "$($grupp.Name): $($grupp.Count)"
+}
+
+# Password calculation in days
+foreach ($user in $data.users) {
+    $pwdDate = [datetime]$user.passwordLastSet
+    $daysOld = ((Get-Date) - $pwdDate).Days
+    $user | Add-Member -NotePropertyName "passwordAgeDays" -NotePropertyValue $daysOld -Force
+}
