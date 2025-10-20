@@ -55,3 +55,13 @@ foreach ($user in $data.users) {
     $daysOld = ((Get-Date) - $pwdDate).Days
     $user | Add-Member -NotePropertyName "passwordAgeDays" -NotePropertyValue $daysOld -Force
 }
+
+# Creating CSV file with inactive users
+$inaktivaAnvändare | Select-Object samAccountName, displayName, department, site, lastLogon, passwordAgeDays |
+Export-Csv -Path "inactive_users.csv" -NoTypeInformation -Encoding UTF8
+Write-Host "`nCSV-fil skapad: inactive_users.csv"
+
+# List the 10 users that have not logged in for the longest time
+$datorerSorterade = $data.computers | Sort-Object -Property lastLogon | Select-Object -First 10
+Write-Host "`n10 datorer som inte checkat in på längst tid:`n"
+$datorerSorterade | Select-Object name, site, lastLogon | Format-Table
