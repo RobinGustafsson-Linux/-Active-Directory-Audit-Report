@@ -11,8 +11,8 @@ Write-Host "Domännamn:" $data.domain
 Write-Host "Exportdatum:" $data.export_date
 
 # filter users who hasnt logged in for more than 30 days
-$gränsdatum = (Get-Date).AddDays(30)
-$inaktivaAnvändare = $data.users | Where-object {
+$gränsdatum = (Get-Date).AddDays(-30)
+$inaktivaAnvändare = $data.users | Where-Object {
     ([datetime]$_.lastLogon) -lt $gränsdatum
 
 }
