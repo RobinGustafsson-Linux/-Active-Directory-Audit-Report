@@ -11,9 +11,9 @@ Write-Host "Domännamn:" $data.domain
 Write-Host "Exportdatum:" $data.export_date
 
 # filter users who hasnt logged in for more than 30 days
-$gränsdatum = (Get-Date).AddDays(-30)
+$gränsDatum = (Get-Date).AddDays(-30)
 $inaktivaAnvändare = $data.users | Where-Object {
-    ([datetime]$_.lastLogon) -lt $gränsdatum
+    ([datetime]$_.lastLogon) -lt $gränsDatum
 
 }
 
@@ -65,3 +65,26 @@ Write-Host "`nCSV-fil skapad: inactive_users.csv"
 $datorerSorterade = $data.computers | Sort-Object -Property lastLogon | Select-Object -First 10
 Write-Host "`n10 datorer som inte checkat in på längst tid:`n"
 $datorerSorterade | Select-Object name, site, lastLogon | Format-Table
+
+# Report writing
+
+$rapport = @"
+==============================================
+ACTIVE DIRECTORY AUDIT RAPPORT
+==============================================
+Domän: $($data.domain)
+Exportdatum: $($data.export_date)
+
+Antal inaktiva användare: $($inaktivaAnvändare.Count)
+
+Användare per avdelning:
+$(
+    $antalPerAvdelning.GetEnumerator() | ForEach-Object {
+        " - $($_.Key): $($_.Value)"
+    } | Out-String
+)
+==============================================
+"@
+
+$rapport | Out-File -FilePath "ad_audit_report.txt" -Encoding UTF8
+Write-Host "`nRapport sparad som ad_audit_report.txt"

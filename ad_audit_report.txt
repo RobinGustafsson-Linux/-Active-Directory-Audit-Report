@@ -1,0 +1,11 @@
+==============================================
+ACTIVE DIRECTORY AUDIT RAPPORT
+==============================================
+Domän: 
+Exportdatum: 
+
+Antal inaktiva användare: 0
+
+Användare per avdelning:
+
+==============================================
